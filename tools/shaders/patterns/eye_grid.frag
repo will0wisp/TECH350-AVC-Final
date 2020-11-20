@@ -19,7 +19,7 @@ float polyDist(vec2 _st, vec2 _center, float _exp, bool _fromUpRight){
     float expSign = _fromUpRight? -1. : 1.;
     return expSign * (relPos.y + expSign * pow(relPos.x,_exp)) / 2.;
 }
-//this only works for grids where
+//this only works for grids laid out in an even brick pattern. can be modified for variable offset grids, etc.
 float eyeDist(vec2 _gv, vec2 _center){ 
      vec2 relPos = _gv - _center;
      vec2 ev = abs(_gv);

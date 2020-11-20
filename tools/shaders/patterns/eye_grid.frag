@@ -1,5 +1,3 @@
-// Author @patriciogv ( patriciogonzalezvivo.com ) - 2015
-
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -26,6 +24,17 @@ float eyeHelper(vec2 _gv, vec2 _center, float _r, bool _fromUpRight) { //this ac
     float dist = polyDist(_gv, _center, 1.8, _fromUpRight);
     return smoothstep(_r, _r*.94, pow(dist,.5));
 }
+
+float eyeDist(vec2 _gv, vec2 _center){
+     vec2 relPos = _gv - _center;
+     vec2 ev = abs(_gv);
+     float exp = 1.8;
+     float dist = polyDist(ev, _center, exp, false);
+     float urDist = polyDist(ev, _center + vec2(1.,2.), exp, true);
+     float  rDist = polyDist(ev, _center + vec2(2.,0.), exp, false);
+
+     return min(dist, urDist);
+}
 //draws the shape of an eye
 vec2 eye(vec2 _gv, float _radius){ //x value = shape pattern. y value tells you how many of the 
     vec2 val =  vec2(0.);
@@ -46,7 +55,7 @@ void main(void){
     vec2 brickShape = normalize( vec2(1., 2.) );
     vec2 gv = brickTile(uv, brickShape*scl); //grid coordinates
     gv = abs(gv - .5) * 2. ;
-       
+    
     float r = 0.55+ .3 * sin(u_time); //radius
 
     // col += eye(gv, .83).x * vec3(0.,1.,0.);
@@ -59,5 +68,7 @@ void main(void){
     }
 
 
-    gl_FragColor = col;
+    //gl_FragColor = col;
+    float dist = eyeDist(gv, vec2(0.));
+    gl_FragColor = vec4( vec3( step((sin(u_time)*.5+.5)*.5,dist) ), 1.);
 }
